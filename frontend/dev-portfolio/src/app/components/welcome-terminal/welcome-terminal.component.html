@@ -1,0 +1,111 @@
+<div #portfolioContainer class="portfolio-container">
+  <!-- Header Section -->
+  <div class="header-section">
+    <div class="star-icon">
+      <i class="star">★</i>
+    </div>
+    <h1 class="main-title">
+      G'day, I'm <span class="name-highlight">Dhanush</span>
+    </h1>
+    <h2 class="subtitle" #titleDisplay></h2>
+    <p class="description">
+      I create digital experiences that are beautiful, functional, and meaningful.<br>
+      Passionate about clean code, thoughtful design, and solving complex problems<br>
+      with elegant solutions.
+    </p>
+  </div>
+
+  <!-- Terminal Section -->
+  <div class="terminal-container">
+    <div class="terminal-header">
+      <div class="terminal-controls">
+        <span class="control-btn red"></span>
+        <span class="control-btn yellow"></span>
+        <span class="control-btn green"></span>
+      </div>
+      <div class="terminal-title">
+        <span class="terminal-arrow">></span>
+      </div>
+      <div class="terminal-close">
+        <span class="close-btn">×</span>
+      </div>
+    </div>
+
+    <div class="terminal-content" #terminalScroll>
+      <div class="terminal-intro">
+        <span class="command-prompt">Try:</span>
+      </div>
+      
+      <div class="commands-grid">
+        <div class="commands-row">
+          <span 
+            class="command-item" 
+            *ngFor="let cmd of commands.slice(0, 4)"
+            (click)="onCommandClick(cmd.name)"
+            [title]="cmd.description">
+            {{ cmd.name }}
+          </span>
+          <span class="separator">|</span>
+        </div>
+        
+        <div class="commands-row">
+          <span 
+            class="command-item" 
+            *ngFor="let cmd of commands.slice(4, 8)"
+            (click)="onCommandClick(cmd.name)"
+            [title]="cmd.description">
+            {{ cmd.name }}
+          </span>
+          <span 
+            class="command-item" 
+            (click)="onCommandClick(commands[8].name)"
+            [title]="commands[8].description">
+            {{ commands[8].name }}
+          </span>
+          <span class="separator">|</span>
+        </div>
+      </div>
+
+      <div class="welcome-message">
+        <span class="status-indicator">●</span>
+        <span class="welcome-text">Welcome to Alex's Dev Terminal!</span>
+      </div>
+
+      <div class="help-text">
+        Type 'help' to explore.
+      </div>
+
+      <!-- Command Output -->
+      <div class="terminal-output">
+        <div *ngFor="let line of outputLines">
+          <span>{{ line }}</span>
+        </div>
+      </div>
+
+      <div class="command-line">
+        <span class="prompt">dev-portfolio$alex ~ %</span>
+        <input
+          type="text"
+          [(ngModel)]="userInput"
+          (keydown.enter)="handleCommand()"
+          (keydown)="onKeyDown($event)"
+          class="terminal-input"
+          autofocus
+        />
+      </div>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="action-buttons">
+    <button class="action-btn" (click)="onContactClick()">
+      $ contact --email
+    </button>
+    <button class="action-btn" (click)="onResumeDownload()">
+      $ resume --download
+    </button>
+    <button class="action-btn" (click)="onProjectsView()">
+      $ projects --view
+    </button>
+  </div>
+</div>

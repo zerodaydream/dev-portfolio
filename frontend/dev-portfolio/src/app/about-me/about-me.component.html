@@ -1,0 +1,27 @@
+<div #aboutContainer class="about-me-container" [class.visible]="isVisible">
+  <div class="about-content">
+    <!-- Header Section -->
+    <div class="header-section">
+      <h1 class="main-title">About Me</h1>
+      <p class="description">
+        I'm passionate about creating meaningful digital experiences that solve real-world problems and make people's lives easier.
+      </p>
+    </div>
+
+    <!-- Skills Grid -->
+    <div class="skills-grid">
+      <div 
+        class="skill-card" 
+        *ngFor="let skill of skillCards; let i = index; trackBy: trackByIndex"
+        [style.animation-delay.ms]="i * 150">
+        <div class="skill-icon" [style.background-color]="skill.iconBackground">
+          <span class="icon">{{ skill.icon }}</span>
+        </div>
+        <div class="skill-content">
+          <h3 class="skill-title">{{ skill.title }}</h3>
+          <p class="skill-description">{{ skill.description }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

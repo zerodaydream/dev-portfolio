@@ -1,0 +1,8 @@
+<div class="portfolio-container">
+  <div scroll-trigger (scrolledIntoView)="onRevealAboutMe()">
+    <app-welcome-terminal></app-welcome-terminal>
+  </div>
+
+  <!-- About Me Section -->
+  <app-about-me *ngIf="showAboutMe"></app-about-me>
+</div>
