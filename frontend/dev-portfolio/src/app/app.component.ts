@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WelcomeTerminalComponent } from './components/welcome-terminal/welcome-terminal.component';
-import { AboutMeComponent } from './about-me/about-me.component';
+import { AboutMeComponent } from './components/about-me/about-me.component';
+import { FolderShowcaseComponent } from './components/folder-showcase/folder-showcase.component';
 import { ScrollTriggerDirective } from './directives/scroll-trigger/scroll-trigger.directive';
 import { FormsModule } from '@angular/forms';
 
@@ -12,6 +13,7 @@ import { FormsModule } from '@angular/forms';
     CommonModule,
     WelcomeTerminalComponent,
     AboutMeComponent,
+    FolderShowcaseComponent,
     ScrollTriggerDirective,
     FormsModule
   ],
