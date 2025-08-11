@@ -1,0 +1,103 @@
+<div class="chat-container" [class.visible]="isVisible">
+  <!-- Header Section -->
+  <div class="chat-header">
+    <h1 class="chat-title">Chat Here to Know More About Me</h1>
+    <p class="chat-subtitle">Ask me anything! I'm here to help you learn more about my background, skills, and experience.</p>
+  </div>
+
+  <!-- Main Chat Interface -->
+  <div class="chat-interface">
+    <!-- Input Section -->
+    <div class="input-container">
+      <div class="input-row">
+        <button class="add-button" type="button">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+          </svg>
+        </button>
+        
+        <div class="dropdown-section">
+          <button class="dropdown-button" type="button">
+            <span>Quick prompts</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6,9 12,15 18,9"></polyline>
+            </svg>
+          </button>
+        </div>
+
+        <div class="message-input-container">
+          <textarea 
+            class="message-input"
+            [(ngModel)]="userMessage"
+            (input)="onMessageInput()"
+            (focus)="onFocus()"
+            (blur)="onBlur()"
+            (keypress)="onKeyPress($event)"
+            placeholder="How can I help you today?"
+            rows="1"></textarea>
+        </div>
+
+        <button class="voice-button" type="button">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+            <line x1="12" y1="19" x2="12" y2="23"></line>
+            <line x1="8" y1="23" x2="16" y2="23"></line>
+          </svg>
+        </button>
+
+        <button class="send-button" type="button" (click)="sendMessage()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22,2 15,22 11,13 2,9 22,2"></polygon>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Response Container -->
+    <div class="response-container" *ngIf="showExampleResponse">
+      <div class="response-content">
+        <p>{{ exampleResponse }}</p>
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="quick-actions">
+        <button 
+          class="quick-action-btn"
+          *ngFor="let prompt of quickPrompts"
+          (click)="onQuickPromptClick(prompt)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path *ngIf="prompt.includes('age')" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle *ngIf="prompt.includes('age')" cx="12" cy="7" r="4"></circle>
+            
+            <path *ngIf="prompt.includes('resume')" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline *ngIf="prompt.includes('resume')" points="14,2 14,8 20,8"></polyline>
+            
+            <path *ngIf="prompt.includes('more about')" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle *ngIf="prompt.includes('more about')" cx="12" cy="7" r="4"></circle>
+            
+            <path *ngIf="prompt.includes('certificates')" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline *ngIf="prompt.includes('certificates')" points="14,2 14,8 20,8"></polyline>
+          </svg>
+          {{ prompt }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Status Footer -->
+    <div class="chat-footer">
+      <div class="status-indicator">
+        <div class="online-dot"></div>
+        <span class="status-text">Alex is online and ready to chat</span>
+      </div>
+      
+      <div class="powered-by">
+        <span class="powered-text">Powered by AI</span>
+        <span class="separator">•</span>
+        <span class="response-text">Instant responses</span>
+      </div>
+    </div>
+  </div>
+</div>

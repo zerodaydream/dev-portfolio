@@ -4,8 +4,13 @@
   </div>
 
   <!-- About Me Section -->
-  <app-about-me *ngIf="showAboutMe"></app-about-me>
+  <div scroll-trigger (scrolledIntoView)="onRevealFolderShowcase()" *ngIf="showAboutMe">
+    <app-about-me></app-about-me>
+  </div>
 
   <!-- Folder Showcase Section -->
-  <app-folder-showcase></app-folder-showcase>
+  <app-folder-showcase [isVisible]="folderShowcaseVisible"></app-folder-showcase>
+
+  <!-- Chat RAG Section -->
+  <app-chatrag></app-chatrag>
 </div>

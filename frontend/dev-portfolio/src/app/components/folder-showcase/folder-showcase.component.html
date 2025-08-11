@@ -1,76 +1,69 @@
-<div class="poker-showcase" [class.visible]="isVisible">
+<div class="poker-showcase" [class.visible]="isVisible" [class.section-visible]="sectionVisible">
   <!-- Title -->
-  <div class="showcase-title">
+  <div class="showcase-title" [class.title-visible]="titleVisible">
     <h1>{{ title }}</h1>
+    <p class="section-subtitle">Explore my technical expertise through this interactive card showcase</p>
   </div>
 
-  <!-- Deck Table -->
-  <div class="poker-table">
-    <!-- Three Deck Slots -->
+  <!-- Three Deck Showcase -->
+  <div class="deck-showcase" [class.decks-visible]="decksVisible" *ngIf="!showCardGrid">
     <div class="deck-container">
-      <div
-        class="deck-slot"
+      <div 
+        class="deck-item"
         *ngFor="let deck of decks; let i = index"
-        [class.active]="i === activeDeckIndex"
-        [class.hidden]="activeDeckIndex !== null && i !== activeDeckIndex"
-        [class.left]="i === 0"
-        [class.center]="i === 1"
-        [class.right]="i === 2"
-        (click)="moveDeckToCenter(i)"
+        (click)="selectDeck(i)"
       >
-        <!-- Deck Label -->
+        <!-- Show header card as preview -->
+        <div class="preview-card" 
+             [class.red-card]="getDeckHeaderCard(i).color === 'red'"
+             [class.black-card]="getDeckHeaderCard(i).color === 'black'">
+          <div class="card-face">
+            <!-- No corners for header cards -->
+            <div class="card-center">
+              <div class="tech-icon">{{ getDeckHeaderCard(i).techIcon }}</div>
+              <div class="tech-title">{{ getDeckHeaderCard(i).title }}</div>
+            </div>
+          </div>
+        </div>
         <div class="deck-label">{{ getDeckTitle(i) }}</div>
-        
-        <!-- Cards Stack -->
-        <div class="card-stack" [class.spread]="spreadDeckIndex === i">
-          <div
-            class="poker-card"
-            *ngFor="let card of deck; let j = index"
-            [class.picked]="pickedCard?.id === card.id"
-            [class.face-card]="card.isFace"
+      </div>
+    </div>
+  </div>
+
+  <!-- Card Grid Layout (Solitaire Style) -->
+  <div class="card-grid-container" *ngIf="showCardGrid && selectedDeckIndex !== null">
+    <div class="solitaire-table">
+      <div class="card-row" *ngFor="let row of cardRows; let rowIndex = index">
+        <div 
+          class="card-position"
+          *ngFor="let card of row; let colIndex = index"
+          [style.animation-delay]="(rowIndex * 5 + colIndex) * 100 + 'ms'"
+        >
+          <div 
+            class="solitaire-card"
             [class.red-card]="card.color === 'red'"
             [class.black-card]="card.color === 'black'"
-            [attr.data-suit]="card.suit"
-            [attr.data-value]="card.value"
-            [style.zIndex]="deck.length - j + 100"
-            [style.transform]="getCardTransform(i, j, deck.length)"
-            [style.transition-delay]="spreadDeckIndex === i ? (j * 0.05) + 's' : '0s'"
-(click)="spreadDeckIndex === i ? pickCard(card, $event) : null"
+            [class.selected]="selectedCard?.id === card.id"
+            (click)="selectCard(card)"
           >
-            <!-- Card Front -->
-            <div class="card-face front">
-              <!-- Top-left corner -->
+            <div class="card-face">
               <div class="corner top-left">
                 <div class="rank" [style.color]="card.color === 'red' ? '#dc2626' : '#374151'">{{ card.value }}</div>
-                <div class="suit" [style.color]="card.color === 'red' ? '#dc2626' : '#374151'">
-                  {{ getSuitSymbol(card.suit) }}
-                </div>
+                <div class="suit" [style.color]="card.color === 'red' ? '#dc2626' : '#374151'">{{ getSuitSymbol(card.suit) }}</div>
               </div>
-
-              <!-- Bottom-right corner (rotated) -->
               <div class="corner bottom-right">
                 <div class="rank" [style.color]="card.color === 'red' ? '#dc2626' : '#374151'">{{ card.value }}</div>
-                <div class="suit" [style.color]="card.color === 'red' ? '#dc2626' : '#374151'">
-                  {{ getSuitSymbol(card.suit) }}
-                </div>
+                <div class="suit" [style.color]="card.color === 'red' ? '#dc2626' : '#374151'">{{ getSuitSymbol(card.suit) }}</div>
               </div>
-
-              <!-- Center content -->
               <div class="card-center">
-                <!-- Face card or regular card content -->
                 <div *ngIf="card.isFace" class="face-content">
                   <div class="tech-icon">{{ card.techIcon }}</div>
-                  <div class="face-title">{{ card.title }}</div>
-                  <div class="face-suit" [style.color]="card.color === 'red' ? '#dc2626' : '#374151'">
-                    {{ getSuitSymbol(card.suit) }}
-                  </div>
+                  <div class="tech-title">{{ card.title }}</div>
                 </div>
-                
                 <div *ngIf="!card.isFace" class="number-content">
                   <div class="tech-icon-large">{{ card.techIcon }}</div>
                   <div class="tech-title">{{ card.title }}</div>
                   <div class="suit-pattern">
-                    <!-- Generate poker pattern based on card value -->
                     <span 
                       *ngFor="let i of getCardPattern(card.value)" 
                       class="suit-symbol" 
@@ -81,102 +74,123 @@
                 </div>
               </div>
             </div>
-
-            <!-- Card Back -->
-            <div class="card-face back">
-              <div class="card-back-pattern"></div>
-            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Card Details Display Below Spread -->
-    <div class="inline-card-details" *ngIf="pickedCard && activeDeckIndex !== null">
-      <div class="card-info-container">
-        <div class="card-header">
-          <h3>{{ pickedCard.title }}</h3>
-          <button class="close-inline-btn" (click)="clearPickedCard()">×</button>
-        </div>
-        <p class="card-description">{{ pickedCard.description }}</p>
-        
-        <div class="skills-section">
-          <h4>Key Skills & Features:</h4>
-          <div class="skills-grid">
-            <span class="skill-tag" *ngFor="let skill of pickedCard.skills">
-              {{ skill }}
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Control Buttons -->
-    <div class="game-controls" *ngIf="activeDeckIndex !== null">
-      <div class="action-buttons">
-        <button class="action-btn" *ngIf="pickedCard" (click)="clearPickedCard()">
-          $ clear selection
-        </button>
-        <button class="action-btn" (click)="putBackDeck()">
-          $ put back deck
-        </button>
-      </div>
+    <!-- Back Button -->
+    <div class="control-panel">
+      <button class="back-button" (click)="goBackToDecks()">
+        <span class="icon">←</span>
+        Back to Decks
+      </button>
     </div>
   </div>
 
-  <!-- Card Detail Modal -->
-  <div class="card-modal" *ngIf="false" (click)="closeCardView()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <div class="modal-card">
-        <!-- Card Display Section (Left) -->
-        <div class="card-display-section">
-          <div class="large-poker-card" 
-               [class.red-card]="pickedCard?.color === 'red'"
-               [class.black-card]="pickedCard?.color === 'black'">
-            <div class="card-face front">
-              <!-- Corners -->
-              <div class="corner top-left">
-                <div class="rank" [style.color]="pickedCard?.color === 'red' ? '#dc2626' : '#374151'">{{ pickedCard?.value }}</div>
-                <div class="suit" [style.color]="pickedCard?.color === 'red' ? '#dc2626' : '#374151'">
-                  {{ getSuitSymbol(pickedCard?.suit || '') }}
-                </div>
-              </div>
-              <div class="corner bottom-right">
-                <div class="rank" [style.color]="pickedCard?.color === 'red' ? '#dc2626' : '#374151'">{{ pickedCard?.value }}</div>
-                <div class="suit" [style.color]="pickedCard?.color === 'red' ? '#dc2626' : '#374151'">
-                  {{ getSuitSymbol(pickedCard?.suit || '') }}
-                </div>
-              </div>
+  <!-- Stunning Description Modal -->
+  <div class="description-modal" *ngIf="selectedCard" (click)="closeModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
 
-              <!-- Center -->
-              <div class="card-center">
-                <div class="tech-icon-xl">{{ pickedCard?.techIcon }}</div>
-                <h2 class="tech-title-xl">{{ pickedCard?.title }}</h2>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card Details Section (Right) -->
-        <div class="card-details-section">
-          <div class="card-details">
-          <h3>{{ pickedCard?.title }}</h3>
-          <p class="description">{{ pickedCard?.description }}</p>
+      <!-- Modal Content -->
+      <div class="modal-content">
+        <!-- Header -->
+        <div class="modal-header">
+          <h1 class="modal-title">{{ selectedCard.title }}</h1>
           
-          <div class="skills-section">
-            <h4>Key Skills & Features:</h4>
-            <div class="skills-grid">
-              <span class="skill-tag" *ngFor="let skill of pickedCard?.skills || []">
-                {{ skill }}
-              </span>
+          <!-- Selected Card Display -->
+          <div class="selected-card-display">
+            <div class="mini-card"
+                 [class.red-card]="selectedCard.color === 'red'"
+                 [class.black-card]="selectedCard.color === 'black'">
+              <div class="card-face">
+                <div class="corner top-left">
+                  <div class="rank" [style.color]="selectedCard.color === 'red' ? '#dc2626' : '#374151'">{{ selectedCard.value }}</div>
+                  <div class="suit" [style.color]="selectedCard.color === 'red' ? '#dc2626' : '#374151'">{{ getSuitSymbol(selectedCard.suit) }}</div>
+                </div>
+                <div class="corner bottom-right">
+                  <div class="rank" [style.color]="selectedCard.color === 'red' ? '#dc2626' : '#374151'">{{ selectedCard.value }}</div>
+                  <div class="suit" [style.color]="selectedCard.color === 'red' ? '#dc2626' : '#374151'">{{ getSuitSymbol(selectedCard.suit) }}</div>
+                </div>
+                <div class="card-center">
+                  <div *ngIf="selectedCard.isFace" class="face-content">
+                    <div class="tech-icon-small">{{ selectedCard.techIcon }}</div>
+                  </div>
+                  <div *ngIf="!selectedCard.isFace" class="number-content">
+                    <div class="tech-icon-small">{{ selectedCard.techIcon }}</div>
+                    <div class="suit-pattern-small">
+                      <span 
+                        *ngFor="let i of getCardPattern(selectedCard.value)" 
+                        class="suit-symbol-small" 
+                        [style.color]="selectedCard.color === 'red' ? '#dc2626' : '#374151'">
+                        {{ getSuitSymbol(selectedCard.suit) }}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-
-          <button class="close-btn" (click)="closeCardView()">
-            <span>×</span> Close Card
+          
+          <button class="close-button" (click)="closeModal()">
+            <div class="close-icon">✕</div>
           </button>
+        </div>
+
+        <!-- Metadata -->
+        <div class="metadata-grid">
+          <div class="metadata-item">
+            <div class="label">Type</div>
+            <div class="value">{{ selectedCard.isFace ? 'Framework' : 'Technology' }}</div>
+          </div>
+          <div class="metadata-item">
+            <div class="label">Category</div>
+            <div class="value">{{ getDeckTitle(selectedDeckIndex!) }}</div>
+          </div>
+          <div class="metadata-item">
+            <div class="label">Rank</div>
+            <div class="value">{{ selectedCard.value }}</div>
           </div>
         </div>
+
+        <!-- Description -->
+        <div class="description-section">
+          <h3>Overview</h3>
+          <p>{{ selectedCard.description }}</p>
+        </div>
+
+        <!-- Skills -->
+        <div class="skills-section">
+          <h3>Key Skills & Features</h3>
+          <div class="skills-grid">
+            <div 
+              class="skill-tag" 
+              *ngFor="let skill of selectedCard.skills; let i = index"
+              [style.animation-delay]="i * 100 + 'ms'"
+            >
+              {{ skill }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button class="primary-button" (click)="closeModal()">
+            <span>Explore More</span>
+            <div class="button-shine"></div>
+          </button>
+          <button class="secondary-button" (click)="goBackToDecks()">
+            Back to Collection
+          </button>
+        </div>
+      </div>
+
+      <!-- Decorative Elements -->
+      <div class="decorative-elements">
+        <div class="floating-particle" *ngFor="let p of [1,2,3,4,5,6]"></div>
+        <div class="gradient-orb orb-1"></div>
+        <div class="gradient-orb orb-2"></div>
+        <div class="gradient-orb orb-3"></div>
       </div>
     </div>
   </div>
